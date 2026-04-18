@@ -3,169 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mee Nge 30th Birthday Surprise</title>
+    <title>3D Particle Surprise</title>
     <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-image: url('https://img.sanishtech.com/u/fb3e505060ca477e4779bb5b1fd08e64.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: hidden;
-            font-family: 'Pyidaungsu', sans-serif;
-        }
-
-        #overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .play-btn {
-            padding: 20px 40px;
-            font-size: 22px;
-            background: #ff4757;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
-            font-weight: bold;
-            margin-top: 15px;
-        }
-
-        .input-box {
-            padding: 12px;
-            font-size: 18px;
-            border-radius: 10px;
-            border: none;
-            text-align: center;
-            width: 220px;
-            margin-bottom: 5px;
-        }
-
-        #error-msg {
-            color: #ff4757;
-            margin-top: 10px;
-            font-weight: bold;
-            display: none;
-        }
-
-        .card {
-            background: transparent;            
-            padding: 40px;
-            text-align: center;
-            max-width: 380px;
-            z-index: 10;
-            display: none;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.3);
-            animation: cardPop 1s ease forwards;
-        }
-
-        @keyframes cardPop {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .name { font-size: 3.5rem; color: #e67e22; margin: 10px 0; font-weight: bold; }
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Arial', sans-serif; }
+        canvas { position: absolute; top: 0; left: 0; }
         
-        .item {
-            position: absolute;
-            bottom: -100px;
-            font-size: 30px;
-            animation: floatUp 7s linear infinite;
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); display: flex; justify-content: center;
+            align-items: center; z-index: 100;
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        .start-btn {
+            padding: 15px 40px; font-size: 18px; background: transparent;
+            color: #00bfff; border: 2px solid #00bfff; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 0 15px #00bfff;
+        }
+
+        /* 3D Scene Container */
+        .scene {
+            position: absolute; top: 55%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 360px; height: 360px;
+            perspective: 1200px;
+            display: none; z-index: 50;
+        }
+
+        .cube {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 18s linear infinite;
+        }
+
+        /* 3D Faces */
+        .face {
+            position: absolute;
+            width: 260px; height: 360px;
+            border: 2px solid rgba(0, 191, 255, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            backface-visibility: hidden;
+            box-shadow: 0 0 25px rgba(0, 191, 255, 0.4);
+        }
+
+        .face img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* 3D Positioning (ပုံ ၅ ပုံအတွက် ၇၂ ဒီဂရီစီ ခွဲထားပါသည်) */
+        .face:nth-child(1) { transform: rotateY(0deg) translateZ(250px); }
+        .face:nth-child(2) { transform: rotateY(72deg) translateZ(250px); }
+        .face:nth-child(3) { transform: rotateY(144deg) translateZ(250px); }
+        .face:nth-child(4) { transform: rotateY(216deg) translateZ(250px); }
+        .face:nth-child(5) { transform: rotateY(288deg) translateZ(250px); }
+
+        @keyframes rotateCube {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
         }
     </style>
 </head>
 <body>
 
     <div id="overlay">
-        <h2 style="color: white; margin-bottom: 20px;">ကို့ရဲ့ ဘေဘီလေးအတွက်</h2>
-        <h3 style="color: yellow; margin-bottom: 30px;">♥️Gift By KSL♥️</h3>
-        <input type="password" id="pass-input" class="input-box" placeholder="Password...">
-        <button class="play-btn" onclick="checkPassword()">မွေးနေ့လက်ဆောင်ဖွင့်ရန် 🎁</button>
-        <p id="error-msg">ထပ်ကြိုးစားကြည့်ပါဦး ဘေဘီ</p>
+        <button class="start-btn" onclick="beginSurprise()">♥️Click Here For You ♥️</button>
     </div>
 
-    <div id="birthdayCard" class="card">
-        <div style="font-size: 50px;">🎈 🎂 ✨</div>
-        <h1 style="color: #d35400;">Happy Birthday!</h1>
-        <div class="name">မီးငယ်</div>
-        <p style="color: white;">ယနေ့မွေးနေ့မှစပြီး မှတ်တိုင်သစ်မှာ ပိုမိုတောက်ပတဲ့ အနာဂတ်တွေကို ပိုင်ဆိုင်နိုင်ပါစေ။</p>
-        <div style="font-style: italic; color: white; border-top: 1px solid #eee; padding-top: 20px;">
-            "စိတ်ချမ်းသာ၊ ကိုယ်ကျန်းမာနဲ့အတူ လိုအင်ဆန္ဒများအားလုံး ပြည့်ဝပါစေကြောင်း ဆုတောင်းပေးလိုက်ပါတယ်။"
+    <canvas id="mainCanvas"></canvas>
+
+    <div class="scene" id="slider-panel">
+        <div class="cube">
+            <div class="face"><img src="https://www.image2url.com/r2/default/images/1776495308243-639170b1-6464-4478-bb4e-78a047322292.jpg"></div>
+            <div class="face"><img src="https://www.image2url.com/r2/default/images/1776495474949-2ef3a0ce-3a29-4724-8baf-05d9e27c0a54.jpg"></div>
+            <div class="face"><img src="https://www.image2url.com/r2/default/images/1776495520928-998856eb-ad29-41d4-8760-d4995f64de15.jpg"></div>
+            <div class="face"><img src="https://www.image2url.com/r2/default/images/1776495631754-3141cb10-d4ba-48f0-be88-2eb8868d53f7.jpg"></div>
+            <div class="face"><img src="https://www.image2url.com/r2/default/images/1776495663086-2759e69b-3e1d-44db-b5e4-f9788043af95.jpg"></div>
         </div>
     </div>
 
     <audio id="bgMusic" loop>
-        <source src="https://www.image2url.com/r2/default/audio/1776324223621-4c5c5baa-989a-4d25-a0d9-5c2829de013e.mp3" type="audio/mpeg">
+        <source src="https://www.image2url.com/r2/default/audio/1776495159265-5288f941-a2e1-4411-bb8c-27d666f80b64.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // သီချင်းကို ကြိုတင် Load လုပ်ထားရန်
-        const audio = document.getElementById("bgMusic");
-        audio.load();
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        function checkPassword() {
-            const password = document.getElementById('pass-input').value;
-            const errorMsg = document.getElementById('error-msg');
-            
-            if (password === '2027') {
-                startApp();
-            } else {
-                errorMsg.style.display = 'block';
-                document.getElementById('pass-input').value = "";
+        let particles = [];
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.targetX = this.x; this.targetY = this.y;
+                this.size = Math.random() * 1.8 + 0.8;
+                this.color = `hsla(195, 100%, 75%, ${Math.random() * 0.9 + 0.1})`;
+                this.speed = Math.random() * 0.05 + 0.03;
+            }
+            update() {
+                this.x += (this.targetX - this.x) * this.speed;
+                this.y += (this.targetY - this.y) * this.speed;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 12; ctx.shadowColor = this.color;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
             }
         }
 
-        function startApp() {
-            // ၁။ Overlay ကို ဖျောက်ပြီး Card ကို ပြပါ
+        for (let i = 0; i < 2000; i++) particles.push(new Particle());
+
+        function beginSurprise() {
             document.getElementById('overlay').style.display = 'none';
-            document.getElementById('birthdayCard').style.display = 'block';
-            createBalloons();
-
-            // ၂။ သီချင်းကို တိုက်ရိုက် Play ခိုင်းပါ (User Click Event ထဲမှာ ဖြစ်လို့ Browser က ခွင့်ပြုပါလိမ့်မယ်)
-            const playPromise = audio.play();
-
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    console.log("သီချင်း စဖွင့်ပါပြီ");
-                }).catch(error => {
-                    // Browser က တားမြစ်ထားရင် နောက်တစ်ကြိမ် Screen ကို နှိပ်မှ ပွင့်အောင် လုပ်ထားပေးပါတယ်
-                    console.log("Autoplay တားမြစ်ခံရပါက Screen ကို တစ်ချက် ထပ်နှိပ်ပေးပါ");
-                    window.addEventListener('click', () => {
-                        audio.play();
-                    }, { once: true });
-                });
-            }
+            document.getElementById('bgMusic').play();
+            showHeart();
+            setTimeout(showText, 5500);
+            setTimeout(showPhotos, 11500);
+            animate();
         }
 
-        function createBalloons() {
-            const icons = ['🎈', '✨', '🎂', '🎉', '💖'];
-            setInterval(() => {
-                const item = document.createElement('div');
-                item.className = 'item';
-                item.innerText = icons[Math.floor(Math.random() * icons.length)];
-                item.style.left = Math.random() * 100 + 'vw';
-                item.style.animationDuration = (Math.random() * 3 + 5) + 's';
-                document.body.appendChild(item);
-                setTimeout(() => { item.remove(); }, 8000);
-            }, 400);
+        function showHeart() {
+            particles.forEach((p, i) => {
+                let t = Math.random() * Math.PI * 2;
+                let x = 16 * Math.pow(Math.sin(t), 3);
+                let y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                p.targetX = x * 10 + canvas.width / 2;
+                p.targetY = y * 10 + canvas.height / 2;
+            });
+        }
+
+        function showText() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.font = "bold 70px 'Arial Black', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("My Love is...", canvas.width/2, canvas.height/2);
+            
+            const imageData = ctx.getImageData(0,0,canvas.width, canvas.height).data;
+            let points = [];
+            for (let y=0; y<canvas.height; y+=3) { 
+                for (let x=0; x<canvas.width; x+=3) {
+                    if (imageData[(y * canvas.width + x) * 4 + 3] > 128) points.push({x, y});
+                }
+            }
+            particles.forEach((p, i) => {
+                let pt = points[i % points.length];
+                p.targetX = pt.x; p.targetY = pt.y;
+            });
+        }
+
+        function showPhotos() {
+            // အမှုန်များကို အနှံ့အပြားသို့ ပြန်လည်ဖြန့်ထုတ်လိုက်ခြင်း
+            particles.forEach(p => { 
+                p.targetX = Math.random() * canvas.width;
+                p.targetY = Math.random() * canvas.height;
+                p.speed = 0.01; // အနှေးလွင့်စေရန်
+            });
+            setTimeout(() => { 
+                document.getElementById('slider-panel').style.display = 'block'; 
+            }, 1000);
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
         }
     </script>
 </body>
