@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mee Nge 30th Birthday Surprise</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('https://img.sanishtech.com/u/fb3e505060ca477e4779bb5b1fd08e64.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            font-family: 'Pyidaungsu', sans-serif;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .play-btn {
+            padding: 20px 40px;
+            font-size: 22px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .input-box {
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 10px;
+            border: none;
+            text-align: center;
+            width: 220px;
+            margin-bottom: 5px;
+        }
+
+        #error-msg {
+            color: #ff4757;
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .card {
+            background: transparent;            
+            padding: 40px;
+            text-align: center;
+            max-width: 380px;
+            z-index: 10;
+            display: none;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            animation: cardPop 1s ease forwards;
+        }
+
+        @keyframes cardPop {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .name { font-size: 3.5rem; color: #e67e22; margin: 10px 0; font-weight: bold; }
+        
+        .item {
+            position: absolute;
+            bottom: -100px;
+            font-size: 30px;
+            animation: floatUp 7s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <h2 style="color: white; margin-bottom: 20px;">ကို့ရဲ့ ဘေဘီလေးအတွက်</h2>
+        <h3 style="color: yellow; margin-bottom: 30px;">♥️Gift By KSL♥️</h3>
+        <input type="password" id="pass-input" class="input-box" placeholder="Password...">
+        <button class="play-btn" onclick="checkPassword()">မွေးနေ့လက်ဆောင်ဖွင့်ရန် 🎁</button>
+        <p id="error-msg">ထပ်ကြိုးစားကြည့်ပါဦး ဘေဘီ</p>
+    </div>
+
+    <div id="birthdayCard" class="card">
+        <div style="font-size: 50px;">🎈 🎂 ✨</div>
+        <h1 style="color: #d35400;">Happy Birthday!</h1>
+        <div class="name">မီးငယ်</div>
+        <p style="color: white;">ယနေ့မွေးနေ့မှစပြီး မှတ်တိုင်သစ်မှာ ပိုမိုတောက်ပတဲ့ အနာဂတ်တွေကို ပိုင်ဆိုင်နိုင်ပါစေ။</p>
+        <div style="font-style: italic; color: white; border-top: 1px solid #eee; padding-top: 20px;">
+            "စိတ်ချမ်းသာ၊ ကိုယ်ကျန်းမာနဲ့အတူ လိုအင်ဆန္ဒများအားလုံး ပြည့်ဝပါစေကြောင်း ဆုတောင်းပေးလိုက်ပါတယ်။"
+        </div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.image2url.com/r2/default/audio/1776324223621-4c5c5baa-989a-4d25-a0d9-5c2829de013e.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // သီချင်းကို ကြိုတင် Load လုပ်ထားရန်
+        const audio = document.getElementById("bgMusic");
+        audio.load();
+
+        function checkPassword() {
+            const password = document.getElementById('pass-input').value;
+            const errorMsg = document.getElementById('error-msg');
+            
+            if (password === '2251996') {
+                startApp();
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('pass-input').value = "";
+            }
+        }
+
+        function startApp() {
+            // ၁။ Overlay ကို ဖျောက်ပြီး Card ကို ပြပါ
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('birthdayCard').style.display = 'block';
+            createBalloons();
+
+            // ၂။ သီချင်းကို တိုက်ရိုက် Play ခိုင်းပါ (User Click Event ထဲမှာ ဖြစ်လို့ Browser က ခွင့်ပြုပါလိမ့်မယ်)
+            const playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    console.log("သီချင်း စဖွင့်ပါပြီ");
+                }).catch(error => {
+                    // Browser က တားမြစ်ထားရင် နောက်တစ်ကြိမ် Screen ကို နှိပ်မှ ပွင့်အောင် လုပ်ထားပေးပါတယ်
+                    console.log("Autoplay တားမြစ်ခံရပါက Screen ကို တစ်ချက် ထပ်နှိပ်ပေးပါ");
+                    window.addEventListener('click', () => {
+                        audio.play();
+                    }, { once: true });
+                });
+            }
+        }
+
+        function createBalloons() {
+            const icons = ['🎈', '✨', '🎂', '🎉', '💖'];
+            setInterval(() => {
+                const item = document.createElement('div');
+                item.className = 'item';
+                item.innerText = icons[Math.floor(Math.random() * icons.length)];
+                item.style.left = Math.random() * 100 + 'vw';
+                item.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                document.body.appendChild(item);
+                setTimeout(() => { item.remove(); }, 8000);
+            }, 400);
+        }
+    </script>
+</body>
+</html>
